@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace GuggenheimTest.Models
 {
-    public class TripVM
+    public class Trip
     {
-        public DateTime date;
-        public DateTime time;
-        public string start;
-        public string end;
+        public string date { get; set; }
+        public string start { get; set; }
+        public string end { get; set; }
     }
 }
