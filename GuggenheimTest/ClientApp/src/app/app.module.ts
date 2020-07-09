@@ -29,9 +29,9 @@ import { FindFareComponent } from './find-fare/find-fare.component';
     ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: '**', component: PageNotFoundComponent }
-/*       { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent }, */
+      { path: 'counter', component: CounterComponent },
+      { path: 'fetch-data', component: FetchDataComponent },
+      { path: '**', component: PageNotFoundComponent },
     ])
   ],
   providers: [],
