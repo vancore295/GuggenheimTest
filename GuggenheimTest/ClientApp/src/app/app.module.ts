@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { FindFareComponent } from './find-fare/find-fare.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,9 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     NavMenuComponent,
     HomeComponent,
     CounterComponent,
-    FetchDataComponent
+    FetchDataComponent,
+    PageNotFoundComponent,
+    FindFareComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
