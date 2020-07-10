@@ -14,7 +14,8 @@ export class FindFareComponent implements OnInit {
   trip = new FormGroup({
     date: new FormControl(''),
     start: new FormControl(''),
-    end: new FormControl('')
+    end: new FormControl(''),
+    passengers: new FormControl()
   });
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string, private datepipe: DatePipe) { }

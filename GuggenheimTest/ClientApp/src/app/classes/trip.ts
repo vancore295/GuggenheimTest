@@ -3,4 +3,5 @@ date: Date;
 time: Date;
 start: String;
 end: String;
+passengers: number;
 }
