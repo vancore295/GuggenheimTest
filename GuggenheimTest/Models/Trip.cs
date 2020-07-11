@@ -12,6 +12,8 @@ namespace GuggenheimTest.Models
         public string start { get; set; }
         public string end { get; set; }
         public int passengers { get; set; }
+        public int distance { get; set; }
+        public int duration { get; set; }
 
         public void ConvertDate()
         {
