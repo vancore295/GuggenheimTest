@@ -3,7 +3,7 @@ export interface Trip {
   time: Date;
   start: String;
   end: String;
-  passengers: number;
+  inNY: Boolean;
   distance: number;
   duration: number;
 }

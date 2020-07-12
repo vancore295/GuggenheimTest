@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Trip } from '../classes/trip';
 import { DatePipe } from '@angular/common';
 import { RouteInfo } from '../classes/routeInfo';
+import { Step } from '../classes/steps';
 
 @Component({
   selector: 'app-find-fare',
@@ -17,8 +18,7 @@ export class FindFareComponent implements OnInit, AfterViewInit {
   trip = new FormGroup({
     date: new FormControl(''),
     start: new FormControl(''),
-    end: new FormControl(''),
-    passengers: new FormControl()
+    end: new FormControl('')
   });
 
   title = 'angular-map';
@@ -60,8 +60,8 @@ export class FindFareComponent implements OnInit, AfterViewInit {
 
      this.getLeg(body.start, body.end).then((value: RouteInfo) => {
       console.log(value);
-      body.distance = value.distance;
-      body.duration = value.duration;
+      body.steps = value.steps;
+      body.inNY = value.inNY;
       this.http.post<Trip>(this.baseUrl + 'Trip', body).subscribe(
         (response) => console.log(response),
         (error) => console.log(error)
@@ -93,8 +93,25 @@ export class FindFareComponent implements OnInit, AfterViewInit {
     return new Promise(resolve => {
       this.directionsService.route(routesRequest, function(response, status) {
         if (status === 'OK') {
-          leg.distance = response.routes[0].legs[0].distance.value;
-          leg.duration = response.routes[0].legs[0].duration.value;
+          console.log(response);
+          let steps:Step[] = [];
+
+          if (response.routes[0].legs[0].start_address.includes('New York') || response.routes[0].legs[0].end_address.includes('New York')) {
+            leg.inNY = true;
+          } else {
+            leg.inNY = false;
+          }
+
+          for (let i = 0; i < response.routes[0].legs[0].steps.length; i++) {
+            const temp: Step = {
+              duration: Number(response.routes[0].legs[0].steps[i].duration.text.split(' ', 1)[0]), // in mins
+              distance: Number(response.routes[0].legs[0].steps[i].distance.text.split(' ', 1)[0]), //in miles
+            };
+            steps.push(temp);
+          }
+
+          leg.steps = steps;
+
           console.log('leg', leg);
           resolve(leg);
         }

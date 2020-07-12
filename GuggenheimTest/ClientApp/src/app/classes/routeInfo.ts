@@ -1,4 +1,5 @@
+import { Step } from './steps';
 export class RouteInfo {
-  distance: number;
-  duration: number;
+  steps: Step[];
+  inNY: Boolean;
 }
