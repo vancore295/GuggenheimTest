@@ -10,12 +10,12 @@ namespace GuggenheimTest.Services
     public class TripService
     {
         double unitRate = 0.35;
+        double nysTax = .50;
         public TripService() { }
         public double CalcFareRealTime(Trip trip)
         {
             trip.ConvertDate();
             double fare = 3.00;
-            double nysTax = .50;
             double mph;
             double milesBelow6mph = 0;
             double timeAbove6mph = 0;
@@ -45,14 +45,44 @@ namespace GuggenheimTest.Services
             return Math.Round(fare, 2);
         }
 
-        private double SurgeCharge(DateTime start, double fare)
+        public double CalcStaicFare(StaticTrip trip)
+        {
+            trip.ConvertTimeSpan();
+            double fare = 3.00;
+            fare += nysTax;
+            fare = SurgeCharge(trip, fare);
+            fare = NightSurcharge(trip.timeSpan, fare);
+            fare = FareOnTime(trip.minAbove6, fare);
+            fare = FareOnDistance(trip.milesUnder6, fare);
+
+
+            return fare;
+        }
+
+        private double SurgeCharge(DateTime date, double fare)
         {
             TimeSpan surgeStart = new TimeSpan(16, 0, 0);
             TimeSpan surgeEnd = new TimeSpan(20, 0, 0);
 
-            if (start.DayOfWeek != DayOfWeek.Saturday || start.DayOfWeek != DayOfWeek.Sunday)
+            if (date.DayOfWeek != DayOfWeek.Saturday || date.DayOfWeek != DayOfWeek.Sunday)
             {
-                if (start.TimeOfDay > surgeStart && start.TimeOfDay < surgeEnd)
+                if (date.TimeOfDay > surgeStart && date.TimeOfDay < surgeEnd)
+                {
+                    fare += 1.0;
+                }
+            }
+
+            return fare;
+        }
+
+        private double SurgeCharge(StaticTrip trip, double fare)
+        {
+            TimeSpan surgeStart = new TimeSpan(16, 0, 0);
+            TimeSpan surgeEnd = new TimeSpan(20, 0, 0);
+
+            if (trip.date.DayOfWeek != DayOfWeek.Saturday || trip.date.DayOfWeek != DayOfWeek.Sunday)
+            {
+                if (trip.timeSpan > surgeStart && trip.timeSpan < surgeEnd)
                 {
                     fare += 1.0;
                 }
@@ -67,6 +97,19 @@ namespace GuggenheimTest.Services
             TimeSpan before6 = new TimeSpan(6, 0, 0);
 
             if (start.TimeOfDay > after8 || start.TimeOfDay < before6)
+            {
+                fare += 0.50;
+            }
+
+            return fare;
+        }
+
+        private double NightSurcharge(TimeSpan time, double fare)
+        {
+            TimeSpan after8 = new TimeSpan(20, 0, 0);
+            TimeSpan before6 = new TimeSpan(6, 0, 0);
+
+            if (time > after8 || time < before6)
             {
                 fare += 0.50;
             }

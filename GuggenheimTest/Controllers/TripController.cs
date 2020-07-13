@@ -21,11 +21,13 @@ namespace GuggenheimTest.Controllers
         }
 
         [HttpPost(Name = "CalcTrip")]
-        public ActionResult Post(Trip trip)
+        public ActionResult Post(StaticTrip trip)
         {
-            var fare = _tripService.CalcFareRealTime(trip);
+            // var fare = _tripService.CalcFareRealTime(trip);
+            var fare = _tripService.CalcStaicFare(trip);
 
-            return Ok(trip);
+
+            return Ok(fare);
         }
     }
 }

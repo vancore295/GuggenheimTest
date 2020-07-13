@@ -17,6 +17,7 @@ import { StaticTrip } from '../classes/staticTrip';
 export class FindFareComponent implements OnInit, AfterViewInit {
   staticTrip: FormGroup;
   build: FormBuilder;
+  finalFare: Number;
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string,
               private datepipe: DatePipe, @Inject(FormBuilder)private formBuilder: FormBuilder) {
                 this.build = formBuilder;
@@ -63,8 +64,11 @@ export class FindFareComponent implements OnInit, AfterViewInit {
   }
 
   clacTripStatic(staticTrip: FormGroup) {
-    this.http.post<StaticTrip>(this.baseUrl + 'Trip', this.staticTrip.value).subscribe(
-      (response) => console.log(response),
+    this.http.post<Number>(this.baseUrl + 'Trip', this.staticTrip.value).subscribe(
+      (response) => {
+        console.log(response);
+        this.finalFare = response;
+      },
       (error) => console.log(error)
     );
   }
