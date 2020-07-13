@@ -18,12 +18,6 @@ export class FindFareComponent implements OnInit, AfterViewInit {
   staticTrip: FormGroup;
   build: FormBuilder;
   finalFare: Number;
-  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string,
-              private datepipe: DatePipe, @Inject(FormBuilder)private formBuilder: FormBuilder) {
-                this.build = formBuilder;
-                this.createForm();
-  }
-
   trip = new FormGroup({
     date: new FormControl(''),
     start: new FormControl(''),
@@ -32,13 +26,13 @@ export class FindFareComponent implements OnInit, AfterViewInit {
 
   title = 'angular-map';
   @ViewChild('mapContainer', { static: false }) gmap: ElementRef;
-  map: google.maps.Map;
+  // map: google.maps.Map;
   directionsService;
 
   lat = 40.73061;
   lng = -73.935242;
 
-  coordinates = new google.maps.LatLng(this.lat, this.lng);
+/*   coordinates = new google.maps.LatLng(this.lat, this.lng);
 
   mapOptions: google.maps.MapOptions = {
     center: this.coordinates,
@@ -48,19 +42,38 @@ export class FindFareComponent implements OnInit, AfterViewInit {
   marker = new google.maps.Marker({
     position: this.coordinates,
     map: this.map,
-  });
+  }); */
 
-  ngAfterViewInit() {
-    // this.mapInitializer();
+
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string,
+              private datepipe: DatePipe, @Inject(FormBuilder)private formBuilder: FormBuilder) {
+                this.build = formBuilder;
+                this.createForm();
   }
 
-  mapInitializer() {
-    this.map = new google.maps.Map(this.gmap.nativeElement, this.mapOptions);
-    this.marker.setMap(this.map);
-    this.directionsService = new google.maps.DirectionsService();
+  createForm() {
+    this.staticTrip = this.build.group({
+      minAbove6: [Number, [Validators.required, Validators.min(1)]],
+      milesUnder6: [Number, [Validators.required, Validators.min(1)]],
+      date: [Date, Validators.required],
+      time: ['', Validators.required]
+    });
   }
 
-  ngOnInit() {
+  get minAbove6() {
+    return this.staticTrip.get('minAbove6');
+  }
+
+  get milesUnder6() {
+    return this.staticTrip.get('milesUnder6');
+  }
+
+  get date() {
+    return this.staticTrip.get('date');
+  }
+
+  get time() {
+    return this.staticTrip.get('time');
   }
 
   clacTripStatic(staticTrip: FormGroup) {
@@ -71,6 +84,23 @@ export class FindFareComponent implements OnInit, AfterViewInit {
       },
       (error) => console.log(error)
     );
+  }
+
+
+
+  ngAfterViewInit() {
+    // this.mapInitializer();
+  }
+
+
+
+  ngOnInit() {
+  }
+
+/*   mapInitializer() {
+    this.map = new google.maps.Map(this.gmap.nativeElement, this.mapOptions);
+    this.marker.setMap(this.map);
+    this.directionsService = new google.maps.DirectionsService();
   }
 
   calcTrip(tripData: FormGroup) {
@@ -136,30 +166,7 @@ export class FindFareComponent implements OnInit, AfterViewInit {
         }
       });
     });
-  }
+  } */
 
-  createForm() {
-    this.staticTrip = this.build.group({
-      minAbove6: [Number, [Validators.required, Validators.min(1)]],
-      milesUnder6: [Number, [Validators.required, Validators.min(1)]],
-      date: [Date, Validators.required],
-      time: ['', Validators.required]
-    });
-  }
 
-  get minAbove6() {
-    return this.staticTrip.get('minAbove6');
-  }
-
-  get milesUnder6() {
-    return this.staticTrip.get('milesUnder6');
-  }
-
-  get date() {
-    return this.staticTrip.get('date');
-  }
-
-  get time() {
-    return this.staticTrip.get('time');
-  }
 }
