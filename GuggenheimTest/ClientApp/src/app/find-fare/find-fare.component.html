@@ -1,6 +1,6 @@
-<form [formGroup] = "trip">
+<form [formGroup]="staticTrip" (submit)="clacTripStatic()">
   <div class="row">
-<!--     <div class="col form-group">
+    <!--     <div class="col form-group">
       <label>Date</label>
       <input class="form-control" type="date" formControlName="date">
     </div>
@@ -8,7 +8,7 @@
     <div class="col form-group">
       <label>Time</label>
       <input class="form-control" type="time" formControlName="time">
-    </div> -->
+    </div>
 
     <div class="col form-group">
       <label>Departure</label>
@@ -23,16 +23,49 @@
     <div class="col form-group">
       <label>End</label>
       <input class="form-control" type="text" formControlName="end">
+    </div>-->
+    <div class="col">
+      <div class="col form-group">
+        <label>Number of minutes while traveling above 6 mph</label>
+        <input class="form-control" type="number" formControlName="minAbove6" name="minAbove6">
+        <div *ngIf="minAbove6.invalid && (minAbove6.dirty || minAbove6.touched)"
+          class="alert alert-danger">
+          Required
+        </div>
+      </div>
+      <div class="col form-group">
+        <label>Number of miles traveled while traveling below 6 mph</label>
+        <input class="form-control" type="number" formControlName="milesUnder6">
+        <div *ngIf="milesUnder6.invalid && (milesUnder6.dirty || milesUnder6.touched)"
+          class="alert alert-danger">
+          Required
+        </div>
+      </div>
     </div>
-<!--     <div class="col form-group">
-      <label>Passengers</label>
-      <input class="form-control" type="number" formControlName="passengers" min="1">
-    </div> -->
+
+    <div class="col">
+      <div class="col form-group">
+        <label>Date</label>
+        <input class="form-control" type="date" formControlName="date">
+        <div *ngIf="date.invalid && (date.dirty || date.touched)"
+          class="alert alert-danger">
+          Required
+        </div>
+      </div>
+      <div class="col form-group">
+        <label>Number of minutes while traveling above 6 mph</label>
+        <input class="form-control" type="time" formControlName="time">
+        <div *ngIf="time.invalid && (time.dirty || time.touched)"
+          class="alert alert-danger">
+          Required
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="row">
-    <button type="submit" class="btn btn-primary" (click)="calcTrip(trip)">Submit</button>
+    <button type="submit" class="btn btn-primary" type="submit" [disabled]="!staticTrip.valid">Submit</button>
   </div>
 </form>
 
-<div #mapContainer id="map"></div>
+<!-- <div #mapContainer id="map"></div> -->

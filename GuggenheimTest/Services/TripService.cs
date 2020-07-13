@@ -11,29 +11,38 @@ namespace GuggenheimTest.Services
     {
         double unitRate = 0.35;
         public TripService() { }
-        public double CalcFare(Trip trip)
+        public double CalcFareRealTime(Trip trip)
         {
             trip.ConvertDate();
             double fare = 3.00;
             double nysTax = .50;
-            double miles = Math.Round((trip.distance / 1609.344), 1);
-            double hours = Math.Round((trip.duration / 3600.00), 2);
-            double mph = miles / hours;
+            double mph;
+            double milesBelow6mph = 0;
+            double timeAbove6mph = 0;
 
             if (trip.inNY) fare += nysTax;
             fare = SurgeCharge(trip.tripDate, fare);
             fare = NightSurcharge(trip.tripDate, fare);
 
-            if(mph > 6)
+            for(int i = 0; i < trip.Steps.Count; i++)
             {
-                fare = FareOnTime(trip.duration, fare);
-            }
-            else
-            {
-                fare = FareOnDistance(miles, fare);
+                mph = trip.Steps[i].distance / (trip.Steps[i].duration / 60);
+
+                if (mph > 6)
+                {
+                    timeAbove6mph += trip.Steps[i].duration;
+                }
+                else
+                {
+                    milesBelow6mph += trip.Steps[i].distance;
+                }
             }
 
-            return fare;
+            fare = FareOnTime(timeAbove6mph, fare);
+            fare = FareOnDistance(milesBelow6mph, fare);
+
+
+            return Math.Round(fare, 2);
         }
 
         private double SurgeCharge(DateTime start, double fare)
@@ -67,7 +76,7 @@ namespace GuggenheimTest.Services
 
         private double FareOnTime(double time, double fare)
         {
-            double units = time % 60;
+            double units = Math.Round(time, 0);
 
             double charge = units * unitRate;
 
@@ -76,7 +85,7 @@ namespace GuggenheimTest.Services
 
         private double FareOnDistance(double miles, double fare)
         {
-            double units = Math.Round((miles / 5), 0);
+            double units = Math.Round((miles / .2), 0);
 
             double charge = units * unitRate;
 

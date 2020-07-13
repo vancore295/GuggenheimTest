@@ -23,7 +23,7 @@ namespace GuggenheimTest.Controllers
         [HttpPost(Name = "CalcTrip")]
         public ActionResult Post(Trip trip)
         {
-            var fare = _tripService.CalcFare(trip);
+            var fare = _tripService.CalcFareRealTime(trip);
 
             return Ok(trip);
         }

@@ -1,10 +1,11 @@
 import { Component, OnInit, Inject, AfterViewInit, ViewChild, ElementRef } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl,FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Trip } from '../classes/trip';
 import { DatePipe } from '@angular/common';
 import { RouteInfo } from '../classes/routeInfo';
 import { Step } from '../classes/steps';
+import { StaticTrip } from '../classes/staticTrip';
 
 @Component({
   selector: 'app-find-fare',
@@ -14,7 +15,14 @@ import { Step } from '../classes/steps';
 })
 
 export class FindFareComponent implements OnInit, AfterViewInit {
-  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string, private datepipe: DatePipe) { }
+  staticTrip: FormGroup;
+  build: FormBuilder;
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string,
+              private datepipe: DatePipe, @Inject(FormBuilder)private formBuilder: FormBuilder) {
+                this.build = formBuilder;
+                this.createForm();
+  }
+
   trip = new FormGroup({
     date: new FormControl(''),
     start: new FormControl(''),
@@ -42,7 +50,7 @@ export class FindFareComponent implements OnInit, AfterViewInit {
   });
 
   ngAfterViewInit() {
-    this.mapInitializer();
+    // this.mapInitializer();
   }
 
   mapInitializer() {
@@ -52,6 +60,13 @@ export class FindFareComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+  }
+
+  clacTripStatic(staticTrip: FormGroup) {
+    this.http.post<StaticTrip>(this.baseUrl + 'Trip', this.staticTrip.value).subscribe(
+      (response) => console.log(response),
+      (error) => console.log(error)
+    );
   }
 
   calcTrip(tripData: FormGroup) {
@@ -94,7 +109,7 @@ export class FindFareComponent implements OnInit, AfterViewInit {
       this.directionsService.route(routesRequest, function(response, status) {
         if (status === 'OK') {
           console.log(response);
-          let steps:Step[] = [];
+          const steps: Step[] = [];
 
           if (response.routes[0].legs[0].start_address.includes('New York') || response.routes[0].legs[0].end_address.includes('New York')) {
             leg.inNY = true;
@@ -105,7 +120,7 @@ export class FindFareComponent implements OnInit, AfterViewInit {
           for (let i = 0; i < response.routes[0].legs[0].steps.length; i++) {
             const temp: Step = {
               duration: Number(response.routes[0].legs[0].steps[i].duration.text.split(' ', 1)[0]), // in mins
-              distance: Number(response.routes[0].legs[0].steps[i].distance.text.split(' ', 1)[0]), //in miles
+              distance: Number(response.routes[0].legs[0].steps[i].distance.text.split(' ', 1)[0]), // in miles
             };
             steps.push(temp);
           }
@@ -117,5 +132,30 @@ export class FindFareComponent implements OnInit, AfterViewInit {
         }
       });
     });
+  }
+
+  createForm() {
+    this.staticTrip = this.build.group({
+      minAbove6: [Number, [Validators.required, Validators.min(1)]],
+      milesUnder6: [Number, [Validators.required, Validators.min(1)]],
+      date: [Date, Validators.required],
+      time: ['', Validators.required]
+    });
+  }
+
+  get minAbove6() {
+    return this.staticTrip.get('minAbove6');
+  }
+
+  get milesUnder6() {
+    return this.staticTrip.get('milesUnder6');
+  }
+
+  get date() {
+    return this.staticTrip.get('date');
+  }
+
+  get time() {
+    return this.staticTrip.get('time');
   }
 }
