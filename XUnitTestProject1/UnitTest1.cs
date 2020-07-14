@@ -16,7 +16,7 @@ namespace XUnitTestProject1
         {
             using (var client = new TestClientProvider().Client)
             {
-                var response = await client.PostAsync("/Trip", new StringContent(JsonConvert.SerializeObject(
+                var response = await client.PostAsync("api/Trip/StaticTrip", new StringContent(JsonConvert.SerializeObject(
                     new StaticTrip
                     {
                         date = DateTime.Parse("2020-07-17"),
