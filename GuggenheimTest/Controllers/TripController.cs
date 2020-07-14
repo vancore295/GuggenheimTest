@@ -10,7 +10,7 @@ using GuggenheimTest.Services;
 namespace GuggenheimTest.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]/[action]", Name = "[controller]_[action]")]
     public class TripController : ControllerBase
     {
         TripService _tripService;
@@ -20,12 +20,19 @@ namespace GuggenheimTest.Controllers
             _tripService = new TripService();
         }
 
-        [HttpPost(Name = "CalcTrip")]
-        public ActionResult Post(StaticTrip trip)
+        [HttpPost]
+        public IActionResult StaticTrip(StaticTrip trip)
         {
-            // var fare = _tripService.CalcFareRealTime(trip);
             var fare = _tripService.CalcStaicFare(trip);
 
+
+            return Ok(fare);
+        }
+
+        [HttpPost]
+        public IActionResult DynamicTrip(Trip trip)
+        {
+            var fare = _tripService.CalcFareRealTime(trip);
 
             return Ok(fare);
         }

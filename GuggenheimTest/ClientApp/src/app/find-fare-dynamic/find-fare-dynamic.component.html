@@ -1,0 +1,31 @@
+<form [formGroup]="trip">
+  <div class="row">
+        <div class="col form-group">
+      <label>Date</label>
+      <input class="form-control" type="date" formControlName="date">
+    </div>
+
+    <div class="col form-group">
+      <label>Time</label>
+      <input class="form-control" type="time" formControlName="time">
+    </div>
+
+    <div class="col form-group">
+      <label>Start</label>
+      <input class="form-control" type="text" formControlName="start">
+    </div>
+
+    <div class="col form-group">
+      <label>End</label>
+      <input class="form-control" type="text" formControlName="end">
+    </div>
+  </div>
+
+  <div class="row">
+    <button type="submit" class="btn btn-primary" (click)="calcTrip(trip)">Submit</button>
+  </div>
+</form>
+
+<div class="row">
+  <h3> Fare: ${{finalFare}}</h3>
+</div>

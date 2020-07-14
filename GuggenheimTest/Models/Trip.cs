@@ -7,13 +7,13 @@ namespace GuggenheimTest.Models
 {
     public class Trip
     {
-        public string date { get; set; }
-        public DateTime tripDate;
+        public DateTime date { get; set; }
+        public DateTime tripDate { get; set; }
         public string start { get; set; }
         public string end { get; set; }
         public bool inNY { get; set; }
-        public int distance { get; set; }
-        public int duration { get; set; }
+        public string time { get; set; }
+        public TimeSpan timeSpan { get; set; }
 
         public List<Steps> Steps { get; set; }
 
